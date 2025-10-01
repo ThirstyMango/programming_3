@@ -10,55 +10,55 @@ def toASCII(char:str) -> int:
 def isValidDigitASCII(charASCII:str) -> bool:
     return charASCII >= LOW_MARGIN_ASCII_DIG and charASCII <= TOP_MARGIN_ASCII_DIG
 
-def getLastNDigits(number:int, n:int) -> int:
-    numberStr = str(number)
-    lastTwoStr = numberStr[-n:]
-    return int(lastTwoStr)
+def getLastTwoInputRowDigits() -> int:
+    penultimateASCII, ultimateASCII = None, None
+    currCharASCII = toASCII(getNextChar())
 
-def runDigitProgram():
-
-    def getNextChar() -> str:
-        nextChar = sys.stdin.read(1)
-        return nextChar
-
-    def getNextNumber() -> int:
-        nextNumber = 0 # Assume for horners scheme
-
-        nextCharASCII = toASCII(getNextChar())
-
-        # Remove garbage
-        while (not isValidDigitASCII(nextCharASCII)):
-            nextCharASCII = toASCII(getNextChar())
-
-        # Is a valid digit [0-9]
-        while (isValidDigitASCII(nextCharASCII)):
-            currDigit = nextCharASCII - LOW_MARGIN_ASCII_DIG
-            nextNumber = nextNumber * 10 + currDigit
-            nextCharASCII = toASCII(getNextChar())
-        
-        return nextNumber
+    while (isValidDigitASCII(currCharASCII)):
+        penultimateASCII, ultimateASCII = ultimateASCII, currCharASCII
+        currCharASCII = toASCII(getNextChar())
     
-    def getLastTwoPowerDigits(baseNumber, power):
-        baseLastTwo = cLastTwo = getLastNDigits(baseNumber, 2) # Only last two digits matter
-        powerArray = [int(x) for x in str(power)]
+    ultimate = ultimateASCII- LOW_MARGIN_ASCII_DIG
 
-        for i in range(1, len(powerArray)):
-            cDigit = powerArray[i]
+    if (not penultimateASCII):
+        return ultimate
+    
+    penultimate = penultimateASCII - LOW_MARGIN_ASCII_DIG
 
-            if (cDigit == 0):
-                cLastTwo = getLastNDigits(cLastTwo * cLastTwo, 2)
-            elif (cDigit == 1):
-                cLastTwo = getLastNDigits(cLastTwo * cLastTwo * baseLastTwo, 2)
+    lastTwoDigits = penultimate * 10 + ultimate
+    return lastTwoDigits
 
-        cLastTwoStr = str(cLastTwo) if len(str(cLastTwo)) >= 2 else "0" + str(cLastTwo)
+def getLastNDigits(number:int, n:int = 1) -> int:
+    numberStr = str(number)
+    return int(numberStr[-n:])
 
-        return cLastTwoStr
+def getNextChar() -> str:
+    nextChar = sys.stdin.read(1)
+    return nextChar
 
-    baseNumber = getNextNumber()
-    power = getNextNumber()
+def getLastTwoDigitsPower():
 
-    lastTwoPowerDigits = getLastTwoPowerDigits(baseNumber, power)
-    print(lastTwoPowerDigits)
+    baseLastTwo = getLastTwoInputRowDigits() # Only last two digits matter
+    cLastTwo = 1
 
-runDigitProgram()
+    cPowerCharASCII = toASCII(getNextChar())
+    while (isValidDigitASCII(cPowerCharASCII)):
+        cDigit = cPowerCharASCII - LOW_MARGIN_ASCII_DIG
+
+        if (cDigit == 0):
+            cLastTwo = getLastNDigits(cLastTwo * cLastTwo, 2)
+        elif (cDigit == 1):
+            cLastTwo = getLastNDigits(cLastTwo * cLastTwo * baseLastTwo, 2)
+        
+        cPowerCharASCII = toASCII(getNextChar())
+
+    cLastTwoStr = str(cLastTwo) if len(str(cLastTwo)) >= 2 else "0" + str(cLastTwo)
+
+    print(cLastTwoStr)
+    return
+
+
+
+getLastTwoDigitsPower()
+
 
