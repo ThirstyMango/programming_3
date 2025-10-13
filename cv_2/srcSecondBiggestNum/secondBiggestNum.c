@@ -1,10 +1,5 @@
 #include <stdio.h>
 
-int getIntDivision(int numerator, int denominator) {
-    int div = numerator / denominator;
-    return div;
-}
-
 int getNextCharASCII() {
     int nextNumberASCII = getchar();
     return nextNumberASCII;
@@ -21,7 +16,7 @@ int isMinus(int charASCII) {
     return (charASCII == minusASCII);
 }
 
-int getNextNumber(){
+int getNextNumber() {
 
     int digLowASCIIMargin = 48;
     int cCharASCII = getNextCharASCII();
@@ -38,6 +33,7 @@ int getNextNumber(){
     while (isDigit(cCharASCII)) {
         int cDig = cCharASCII -  digLowASCIIMargin;
         number = number * 10 + cDig;
+        cCharASCII = getNextCharASCII();
     }
 
     if (signMinus) number *= -1;
@@ -47,16 +43,28 @@ int getNextNumber(){
 }
 
 int main() {
-    int numeratorASCII = getNextNumber();
-    int denominatorASCII = getNextNumber();
-
-    int zeroASCII = 48;
-    if (denominatorASCII == zeroASCII) printf("%s\n", "NELZE");
-
-    int div = getIntDivision(numeratorASCII, denominatorASCII);
     
-    printf("%d\n", div);
+    int biggest = getNextNumber();
+    int secondBiggest = getNextNumber();
 
+    if (secondBiggest > biggest) {
+        int temp = biggest;
+        biggest = secondBiggest;
+        secondBiggest = temp;
+    }
+
+    int cNum;
+    while ((cNum = getNextNumber()) != -1){
+        if (cNum > biggest){ 
+            secondBiggest = biggest;
+            biggest = cNum;
+        } else if (cNum > secondBiggest){
+            secondBiggest = cNum;
+        }
+    }
+        
+
+    printf("%d\n", secondBiggest);
     return 0;
-
+    
 }
